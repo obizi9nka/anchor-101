@@ -12,7 +12,7 @@ pub fn test_vote() {
     test_initialize_candidate::test_initialize_candidate();
 
     let (poll_pda, _bump) = Pubkey::find_program_address(
-        &[test_initialize_poll::POLL_ID.to_le_bytes().as_ref()],
+        &[POLL_ID.to_le_bytes().as_ref()],
         &program_id
     );
 
@@ -21,7 +21,7 @@ pub fn test_vote() {
         &program_id
     );
 
-    let vote_tx = program
+    let _ = program
         .request()
         .accounts(voting::accounts::Vote {
             signer: payer.pubkey(),
@@ -30,7 +30,7 @@ pub fn test_vote() {
         })
         .args(voting::instruction::Vote {
             _candidate_name: test_initialize_candidate::CANDIDATE_NAME.to_string(),
-            _poll_id: test_initialize_poll::POLL_ID,
+            _poll_id: POLL_ID,
         })
         .send()
         .expect("Failed to send transaction");

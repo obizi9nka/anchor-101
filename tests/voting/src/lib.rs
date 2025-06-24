@@ -17,3 +17,4 @@ use anchor_client::{
 };
 
 pub const PROGRAM_ID: &str = "2BbtcVmvELEW3kz3F8vDVHV4cRkP24BaSKpU9hVfdHWL";
+pub const POLL_ID: u64 = 1;

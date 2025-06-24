@@ -1,7 +1,5 @@
 use crate::*;
 
-pub const POLL_ID: u64 = 1;
-
 #[test]
 pub fn test_initialize_poll() {
     let anchor_wallet = std::env::var("ANCHOR_WALLET").unwrap();

@@ -7,3 +7,6 @@ edition = "2021"
 [dependencies]
 anchor-client = "0.31.1"
 voting = { version = "0.1.0", path = "../../programs/voting" }
+
+[lints.rust]
+unused-imports = "allow"

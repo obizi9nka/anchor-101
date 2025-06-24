@@ -1,5 +1,3 @@
-use anchor_client::solana_sdk::msg;
-
 use crate::*;
 
 #[test]
@@ -20,7 +18,7 @@ pub fn test_delete_journal_entry() {
 
     test_update_journal_entry::test_update_journal_entry();
 
-    msg!("Title {}", program.account::<crud::JournalEntryState>(journal_pda).unwrap().title);
+    // msg!("Title {}", program.account::<crud::JournalEntryState>(journal_pda).unwrap().title);
 
     let _ = program
         .request()
