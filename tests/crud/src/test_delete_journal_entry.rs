@@ -10,15 +10,31 @@ pub fn test_delete_journal_entry() {
     let program = client.program(program_id).unwrap();
 
     let (journal_pda, _) = Pubkey::find_program_address(
-        &[test_create_journal_entry::TITLE.as_bytes().as_ref(), payer.pubkey().as_ref()],
-        &program_id
+        &[
+            test_create_journal_entry::TITLE.as_bytes().as_ref(),
+            payer.pubkey().as_ref(),
+        ],
+        &program_id,
     );
 
     test_create_journal_entry::test_create_journal_entry();
 
     test_update_journal_entry::test_update_journal_entry();
 
-    // msg!("Title {}", program.account::<crud::JournalEntryState>(journal_pda).unwrap().title);
+    anchor_client::solana_sdk::msg!(
+        "Title {}",
+        program
+            .account::<crud::JournalEntryState>(journal_pda)
+            .unwrap()
+            .title
+    );
+    println!(
+        "Title: {}",
+        program
+            .account::<crud::JournalEntryState>(journal_pda)
+            .unwrap()
+            .title
+    );
 
     let _ = program
         .request()
@@ -28,7 +44,10 @@ pub fn test_delete_journal_entry() {
             system_program: solana_sdk::system_program::ID,
         })
         .args(crud::instruction::Delete {
-            _title: program.account::<crud::JournalEntryState>(journal_pda).unwrap().title,
+            _title: program
+                .account::<crud::JournalEntryState>(journal_pda)
+                .unwrap()
+                .title,
         })
         .send();
 }

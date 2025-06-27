@@ -10,13 +10,18 @@ pub fn test_update_journal_entry() {
     let program = client.program(program_id).unwrap();
 
     let (journal_pda, _) = Pubkey::find_program_address(
-        &[test_create_journal_entry::TITLE.as_bytes().as_ref(), payer.pubkey().as_ref()],
-        &program_id
+        &[
+            test_create_journal_entry::TITLE.as_bytes().as_ref(),
+            payer.pubkey().as_ref(),
+        ],
+        &program_id,
     );
 
     test_create_journal_entry::test_create_journal_entry();
 
-    let mut journal = program.account::<crud::JournalEntryState>(journal_pda).unwrap();
+    let mut journal = program
+        .account::<crud::JournalEntryState>(journal_pda)
+        .unwrap();
 
     assert_eq!(journal.title, test_create_journal_entry::TITLE);
 
@@ -35,7 +40,9 @@ pub fn test_update_journal_entry() {
         })
         .send();
 
-    journal = program.account::<crud::JournalEntryState>(journal_pda).unwrap();
+    journal = program
+        .account::<crud::JournalEntryState>(journal_pda)
+        .unwrap();
 
     assert_eq!(journal.message, update_message);
 }

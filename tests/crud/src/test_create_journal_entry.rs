@@ -14,7 +14,7 @@ pub fn test_create_journal_entry() {
 
     let (journal_pda, _) = Pubkey::find_program_address(
         &[TITLE.as_bytes().as_ref(), payer.pubkey().as_ref()],
-        &program_id
+        &program_id,
     );
 
     let _ = program
@@ -30,7 +30,9 @@ pub fn test_create_journal_entry() {
         })
         .send();
 
-    let journal = program.account::<crud::JournalEntryState>(journal_pda).unwrap();
+    let journal = program
+        .account::<crud::JournalEntryState>(journal_pda)
+        .unwrap();
 
     assert_eq!(journal.title, TITLE);
     assert_eq!(journal.message, MESSAGE);

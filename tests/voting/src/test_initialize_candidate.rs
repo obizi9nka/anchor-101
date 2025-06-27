@@ -11,17 +11,13 @@ pub fn test_initialize_candidate() {
     let program_id = Pubkey::from_str(PROGRAM_ID).unwrap();
     let program = client.program(program_id).unwrap();
 
-    let (poll_pda, _bump) = Pubkey::find_program_address(
-        &[POLL_ID.to_le_bytes().as_ref()],
-        &program_id
-    );
+    let (poll_pda, _bump) =
+        Pubkey::find_program_address(&[POLL_ID.to_le_bytes().as_ref()], &program_id);
 
     test_initialize_poll::test_initialize_poll();
 
-    let (candidate_pda, _bump) = Pubkey::find_program_address(
-        &[CANDIDATE_NAME.as_bytes().as_ref()],
-        &program_id
-    );
+    let (candidate_pda, _bump) =
+        Pubkey::find_program_address(&[CANDIDATE_NAME.as_bytes().as_ref()], &program_id);
 
     let candidate_tx = program
         .request()

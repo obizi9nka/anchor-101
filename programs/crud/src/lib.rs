@@ -9,7 +9,7 @@ pub mod crud {
     pub fn create_journal_entry(
         ctx: Context<CreateJournalEntry>,
         title: String,
-        message: String
+        message: String,
     ) -> Result<()> {
         let journal_entry = &mut ctx.accounts.journal_entry;
         journal_entry.owner = ctx.accounts.owner.key();
@@ -36,11 +36,11 @@ pub mod crud {
 #[instruction(_title: String)]
 pub struct UpdateJournalEntry<'info> {
     #[account(
-        mut, 
+        mut,
         seeds = [_title.as_bytes(), owner.key().as_ref()],
-        bump, 
-        realloc = 8 + JournalEntryState::INIT_SPACE, 
-        realloc::payer = owner, 
+        bump,
+        realloc = 8 + JournalEntryState::INIT_SPACE,
+        realloc::payer = owner,
         realloc::zero = true
     )]
     pub journal_entry: Account<'info, JournalEntryState>,
