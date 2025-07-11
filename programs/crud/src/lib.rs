@@ -9,7 +9,7 @@ pub mod crud {
     pub fn create_journal_entry(
         ctx: Context<CreateJournalEntry>,
         title: String,
-        message: String,
+        message: String
     ) -> Result<()> {
         let journal_entry = &mut ctx.accounts.journal_entry;
         journal_entry.owner = ctx.accounts.owner.key();
