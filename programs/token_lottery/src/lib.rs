@@ -9,7 +9,7 @@ pub use constants::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("dkeKcB81o8nCGzuGQbB7woAMpQPYV4sJE1Q3RwvBPYq");
+declare_id!("BWPD475AAzWqfTJfJDCEzYNkPBWizQY3r4avUCdnVt4C");
 
 #[program]
 pub mod token_lottery {

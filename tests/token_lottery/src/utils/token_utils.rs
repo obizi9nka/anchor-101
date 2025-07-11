@@ -1,19 +1,28 @@
+#![allow(dead_code, deprecated)]
+
 use anchor_client::anchor_lang::prelude::*;
-use anchor_client::anchor_lang::solana_program::example_mocks::solana_sdk;
-use anchor_client::solana_sdk::commitment_config::CommitmentConfig;
-use anchor_client::solana_sdk::signature::read_keypair_file;
-use anchor_client::{ Client, Cluster };
-use anchor_client::solana_sdk::{ signature::Keypair, signature::Signer, system_instruction };
-use anchor_spl::token::spl_token;
-use anchor_spl::token_2022::spl_token_2022;
-use anchor_spl::token_2022::spl_token_2022::state::PackedSizeOf;
-use anchor_spl::token_2022::{
-    self,
-    spl_token_2022::{ instruction::{ initialize_mint2, mint_to }, state::Mint },
+
+use anchor_client::{
+    Client,
+    Cluster,
+    solana_sdk::{ system_instruction, instruction::Instruction },
 };
-use anchor_spl::associated_token::get_associated_token_address_with_program_id;
-use anchor_spl::associated_token;
-use anchor_client::solana_sdk::instruction::Instruction;
+
+use anchor_spl::{
+    token::spl_token,
+    associated_token,
+    token_2022::spl_token_2022,
+    token_2022::spl_token_2022::state::PackedSizeOf,
+    token_2022::spl_token_2022::instruction::{ initialize_mint2, mint_to },
+    token_2022::spl_token_2022::state::Mint,
+};
+
+use anchor_client::solana_sdk::{
+    commitment_config::CommitmentConfig,
+    pubkey::Pubkey,
+    signature::{ read_keypair_file, Keypair },
+    signer::Signer,
+};
 
 pub fn create_new_token(
     client: &Client<&Keypair>,
@@ -60,10 +69,7 @@ pub fn create_new_token(
     );
 
     // Отправляем транзакцию
-    let signature = token_program.rpc().send_and_confirm_transaction(&transaction).unwrap();
-
-    println!("Token created with signature: {}", signature);
-    println!("Token mint address: {}", mint_pubkey);
+    token_program.rpc().send_and_confirm_transaction(&transaction).unwrap();
 
     Ok(mint_pubkey)
 }
@@ -75,7 +81,7 @@ pub fn create_associated_token_account(
     owner: &Pubkey
 ) -> Result<Pubkey> {
     // Вычисляем адрес ATA
-    let ata_address = get_associated_token_address_with_program_id(
+    let ata_address = associated_token::get_associated_token_address_with_program_id(
         owner,
         mint,
         &anchor_spl::token_2022::ID
@@ -115,25 +121,44 @@ pub fn create_associated_token_account(
         recent_blockhash
     );
 
-    let signature = client
+    client
         .program(anchor_spl::token_2022::ID)
         .unwrap()
         .rpc()
         .send_and_confirm_transaction(&transaction)
         .unwrap();
 
-    println!("ATA created with signature: {}", signature);
     println!("ATA address: {}", ata_address);
 
     Ok(ata_address)
 }
 
-// Удобная функция для создания токена с стандартными параметрами
-pub fn create_mock_token() -> Result<Pubkey> {
-    let anchor_wallet = std::env::var("ANCHOR_WALLET").unwrap();
-    let payer = read_keypair_file(&anchor_wallet).unwrap();
-    let client = Client::new_with_options(Cluster::Localnet, &payer, CommitmentConfig::confirmed());
+pub fn mint_tokens(
+    client: &Client<&Keypair>,
+    payer: &Keypair,
+    mint: &Pubkey,
+    ata: &Pubkey,
+    amount: u64
+) -> Result<()> {
+    let token_program = client.program(spl_token_2022::ID).unwrap();
 
-    // Создаем токен с 6 десятичными знаками (как у USDC)
-    create_new_token(&client, &payer, 6)
+    let mint_to_ix = mint_to(
+        &anchor_spl::token_2022::ID,
+        &mint,
+        &ata,
+        &payer.pubkey(),
+        &[],
+        amount
+    ).unwrap();
+
+    let transaction = anchor_client::solana_sdk::transaction::Transaction::new_signed_with_payer(
+        &[mint_to_ix],
+        Some(&payer.pubkey()),
+        &[payer],
+        token_program.rpc().get_latest_blockhash().unwrap()
+    );
+
+    token_program.rpc().send_and_confirm_transaction(&transaction).unwrap();
+
+    Ok(())
 }

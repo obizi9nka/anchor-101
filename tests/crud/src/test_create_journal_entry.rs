@@ -14,10 +14,10 @@ pub fn test_create_journal_entry() {
 
     let (journal_pda, _) = Pubkey::find_program_address(
         &[TITLE.as_bytes().as_ref(), payer.pubkey().as_ref()],
-        &program_id,
+        &program_id
     );
 
-    let _ = program
+    program
         .request()
         .accounts(crud::accounts::CreateJournalEntry {
             owner: payer.pubkey(),
@@ -28,11 +28,14 @@ pub fn test_create_journal_entry() {
             title: TITLE.to_string(),
             message: MESSAGE.to_string(),
         })
-        .send();
-
-    let journal = program
-        .account::<crud::JournalEntryState>(journal_pda)
+        .send()
         .unwrap();
+
+    println!("journal_pda: {:?}", journal_pda);
+
+    let journal = program.account::<crud::JournalEntryState>(journal_pda).unwrap();
+
+    println!("journal owner: {:?}", journal.owner);
 
     assert_eq!(journal.title, TITLE);
     assert_eq!(journal.message, MESSAGE);

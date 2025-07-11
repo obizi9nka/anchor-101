@@ -8,7 +8,7 @@ use constants::*;
 use instructions::*;
 use state::*;
 
-declare_id!("7aPZkxuvq8v2NSbf6bUUSZXooTyJbqEBj2wbDH1ygjEs");
+declare_id!("Af1FFAqnyKd46p2Dgpno5AFYxoebLMbEG3wLQMpGyZj5");
 
 #[program]
 pub mod swap {
