@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-program1 = "pqjZiHpAc6qy3L2u2Z8AvQT8yKAvJ5fNJByqYKBv6ir"
+token_lottery = "dkeKcB81o8nCGzuGQbB7woAMpQPYV4sJE1Q3RwvBPYq"
 
 [registry]
 url = "https://api.apr.dev"
